@@ -65,6 +65,7 @@ public class TargetMethod {
                     solves.add(wave);
                 }
             }
+            af=af_next;
         }
         //формирование файла отчета и графики
         String nameDir = "E_LEFT=" + E_LEFT + " E_RIGHT=" + E_RIGHT;
