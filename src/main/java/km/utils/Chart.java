@@ -3,22 +3,18 @@ package km.utils;
 import km.model.WaveFunction;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 import static km.methods.target.TargetMethod.probabilityDensity;
 import static km.methods.target.TargetUtils.R;
 import static km.utils.Common.N;
-import static km.utils.TaskDefenition.L;
-import static km.utils.TaskDefenition.U;
+import static km.utils.TaskDefinition.L;
+import static km.utils.TaskDefinition.U;
 import static org.jfree.chart.ChartUtils.saveChartAsJPEG;
 
 /**

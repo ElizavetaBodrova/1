@@ -19,8 +19,8 @@ import static km.utils.Chart.printChartPsiFi;
 import static km.utils.Chart.printU;
 import static km.utils.Common.N;
 import static km.utils.Common.сonvertToHartri;
-import static km.utils.TaskDefenition.L;
-import static km.utils.TaskDefenition.U;
+import static km.utils.TaskDefinition.L;
+import static km.utils.TaskDefinition.U;
 
 /**
  * Метод пристрелки

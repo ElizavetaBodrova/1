@@ -3,9 +3,9 @@ package km.utils;
 /**
  * Условие задачи(вариант 10)
  */
-public class TaskDefenition {
+public class TaskDefinition {
     //L,V0,U0 - из условия задачи, W устанавливается для красоты графиков
-    public static double L = 4.0;
+    public static double L = 2.0;
     public static double V0 = 20.0;
     public static double U0 = 0.0;
     public static double W = 4.0;

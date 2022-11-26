@@ -1,7 +1,7 @@
 package km.utils;
 
-import static km.utils.TaskDefenition.L;
-import static km.utils.TaskDefenition.V0;
+import static km.utils.TaskDefinition.L;
+import static km.utils.TaskDefinition.V0;
 
 public class Common {
     //константы для перевода в атомные единицы Хартри
