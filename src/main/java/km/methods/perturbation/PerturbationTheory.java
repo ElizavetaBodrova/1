@@ -28,7 +28,7 @@ public class PerturbationTheory {
 
     /**
      * Численное решение одномерного стационарного
-     * уравнение Шредингера в рамках теории возмущения
+     * уравнение Шредингера в рамках теории возмущений
      * @throws IOException
      */
     public static void findWaveFunctionByPerturbationTheory() throws IOException {
