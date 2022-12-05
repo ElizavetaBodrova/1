@@ -1,6 +1,6 @@
 package km.methods.target;
 
-import km.model.WaveFunction;
+import km.model.WaveFunctionTargetMethod;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,15 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static km.Main.writeResultFile;
 import static km.methods.target.TargetUtils.E_LEFT;
 import static km.methods.target.TargetUtils.E_RIGHT;
 import static km.methods.target.TargetUtils.R;
 import static km.methods.target.TargetUtils.ne;
 import static km.methods.target.TargetUtils.tol;
-import static km.utils.Chart.printChart;
+import static km.methods.target.TargetUtils.writeResultFile;
 import static km.utils.Chart.printChartPsiFi;
-import static km.utils.Chart.printU;
+import static km.utils.Chart.printChartTargetMethod;
 import static km.utils.Common.N;
 import static km.utils.Common.сonvertToHartri;
 import static km.utils.TaskDefinition.L;
@@ -26,16 +25,26 @@ import static km.utils.TaskDefinition.U;
  * Метод пристрелки
  */
 public class TargetMethod {
+
     private static boolean print = false;
+
+    private static List<WaveFunctionTargetMethod> solves;
+
+    public static List<WaveFunctionTargetMethod> getSolves() {
+        return solves;
+    }
+
+    public static void setSolves(List<WaveFunctionTargetMethod> solves) {
+        TargetMethod.solves = solves;
+    }
 
     public static void findWaveFunctionByTargetMethod() throws IOException {
         //перевод в атомные единицы Хартри
         сonvertToHartri();
-        printU();
         System.out.println("E_LEFT=" + E_LEFT + " E_RIGHT=" + E_RIGHT);
         //шаг энергий
         double he = (E_RIGHT - E_LEFT) / (ne - 1);
-        List<WaveFunction> solves = new ArrayList<>();
+        List<WaveFunctionTargetMethod> solves = new ArrayList<>();
         Double[] Psi = new Double[N];
         Double[] Fi = new Double[N];
         //разность производных в узле сшивке для значения E_LEFT
@@ -57,28 +66,29 @@ public class TargetMethod {
                     System.out.println("f(e)=" + f);
                     f_fun(e_next);
                     print = false;
-                    WaveFunction wave = getWaveFunction(Psi, Fi, eval);
-                    wave.fE=f;
-                    //квантово-механическая нормировка
-                    norm(wave);
-                    //добавляем найденную функцию к решениям
-                    solves.add(wave);
+                    WaveFunctionTargetMethod wave = getWaveFunction(Psi, Fi, eval);
+                    if (Arrays.stream(Fi).max(Double::compareTo).get() < 10.0) {
+                        wave.fE = f;
+                        //квантово-механическая нормировка
+                        norm(wave);
+                        //добавляем найденную функцию к решениям
+                        solves.add(wave);
+                    }
                 }
             }
-            af=af_next;
+            af = af_next;
         }
+        setSolves(solves);
         //формирование файла отчета и графики
         String nameDir = "E_LEFT=" + E_LEFT + " E_RIGHT=" + E_RIGHT;
         File theDir = new File("src/main/resources/" + nameDir);
-        if (!theDir.exists()) {
-            theDir.mkdirs();
-        } else {
+        if (theDir.exists()) {
             theDir = new File("src/main/resources/" + nameDir);
-            theDir.mkdirs();
         }
+        theDir.mkdirs();
         writeResultFile(theDir.getPath(), solves);
         for (int i = 0; i < solves.size(); i++) {
-            printChart(theDir.getPath(), "test" + i, solves.get(i));
+            printChartTargetMethod(theDir.getPath(), "test" + i, solves.get(i));
         }
     }
 
@@ -120,11 +130,11 @@ public class TargetMethod {
      * @return волновая функция, Psi, Fi
      * @throws IOException
      */
-    public static WaveFunction getWaveFunction(Double[] Psi, Double[] Fi, double e) throws IOException {
+    public static WaveFunctionTargetMethod getWaveFunction(Double[] Psi, Double[] Fi, double e) throws IOException {
         //шаг
         double h = 2 * L / (N - 1);
         //константа для метода Нумерова
-        double c = h * h / 12;
+        double c = (h * h) / 12;
         //правая часть
         Double[] F = new Double[N];
         //Вычисление правой части
@@ -149,7 +159,8 @@ public class TargetMethod {
             Fi[i - 1] = (p1 - p2) / (1.0 + F[i - 1]);
         }
         //математическая нормировка
-        double max = Arrays.stream(Psi).peek(x -> Math.abs(x)).max(Double::compareTo).get();
+        double max =
+                Arrays.stream(Psi).peek(x -> Math.abs(x)).max(Double::compareTo).get();
         for (int i = 0; i < N; i++) {
             Psi[i] /= max;
         }
@@ -167,7 +178,7 @@ public class TargetMethod {
         //если решение найдено, отрисовывается график Psi,Fi
         if (print)
             printChartPsiFi(e, xx, xx1);
-        WaveFunction wave = new WaveFunction(Arrays.copyOf(Psi, Psi.length), e);
+        WaveFunctionTargetMethod wave = new WaveFunctionTargetMethod(Arrays.copyOf(Psi, Psi.length), e);
         wave.Psi = xx;
         wave.Fi = xx1;
         return wave;
@@ -209,7 +220,7 @@ public class TargetMethod {
     public static double I(double[] Psi) {
         double h = 2 * L / (N - 1);
         double sum = 0.0;
-        for (int i = 1; i < N-1; i++) {
+        for (int i = 1; i < N - 1; i++) {
             sum += Psi[i] * Psi[i];
         }
         return h * ((Psi[0] * Psi[0] + Psi[N - 1] * Psi[N - 1]) / 2 + sum);
@@ -224,7 +235,7 @@ public class TargetMethod {
     public static double I_x(double[] Psi) {
         double h = 2 * L / (N - 1);
         double sum = 0.0;
-        for (int i = 1; i < N-1; i++) {
+        for (int i = 1; i < N - 1; i++) {
             sum += (-L + i * h) * Psi[i] * Psi[i];
         }
         return h * ((L * L * Psi[0] * Psi[0] + L * L * Psi[N - 1] * Psi[N - 1]) / 2 + sum);
@@ -239,7 +250,7 @@ public class TargetMethod {
     public static double I_x_2(double[] Psi) {
         double h = 2 * L / (N - 1);
         double sum = 0.0;
-        for (int i = 1; i < N-1; i++) {
+        for (int i = 1; i < N - 1; i++) {
             sum += (-L + i * h) * (-L + i * h) * Psi[i] * Psi[i];
         }
         return h * ((L * L * L * L * Psi[0] * Psi[0] + L * L * L * L * Psi[N - 1] * Psi[N - 1]) / 2 + sum);
@@ -251,7 +262,7 @@ public class TargetMethod {
      * @param wave волновая функция
      * @throws IOException
      */
-    public static void norm(WaveFunction wave) throws IOException {
+    public static void norm(WaveFunctionTargetMethod wave) throws IOException {
         double[] waveFunction = wave.getX();
         double C = I(waveFunction);
         System.out.println("C=" + C);
