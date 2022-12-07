@@ -88,7 +88,7 @@ public class PerturbationTheory {
     }
 
     /**
-     *
+     * Матричный элемент оператора V
      * @param n
      * @param m
      * @return
