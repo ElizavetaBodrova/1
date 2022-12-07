@@ -2,9 +2,7 @@ package km;
 
 import java.io.IOException;
 
-import static km.methods.method_ritza.MethodRitza.findWaveFunctionByMethodRitza;
-import static km.methods.perturbation.PerturbationTheory.findWaveFunctionByPerturbationTheory;
-import static km.methods.target.TargetMethod.findWaveFunctionByTargetMethod;
+import static km.methods.Ritz_method.RitzMethod.findWaveFunctionByMethodRitza;
 
 public class Main {
 

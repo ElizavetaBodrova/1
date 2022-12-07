@@ -11,7 +11,7 @@ public class Common {
     public static double cenergy = 27.212;
 
     //количество точек
-    public static int N = 10001;
+    public static int N = 1001;
 
     /**
      * Конвертация в атомные единицы Хартри
